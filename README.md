@@ -2,8 +2,8 @@ the project is iCare - The Yoga and Meditation platfrom is a  web-based platform
 Technologies Used:
 
 * Frontend:
-HTML: For structuring web pages.
-CSS: For styling and layout.
+- HTML: For structuring web pages.
+- CSS: For styling and layout.
 JavaScript: For interactive functionalities.
 jQuery: Simplifies DOM manipulation and adds advanced animations/interactions.
 Bootstrap: For responsive design and pre-built UI components.
