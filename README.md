@@ -4,13 +4,13 @@ Technologies Used:
 * Frontend:
 - HTML: For structuring web pages.
 - CSS: For styling and layout.
-JavaScript: For interactive functionalities.
-jQuery: Simplifies DOM manipulation and adds advanced animations/interactions.
-Bootstrap: For responsive design and pre-built UI components.
+- JavaScript: For interactive functionalities.
+- jQuery: Simplifies DOM manipulation and adds advanced animations/interactions.
+- Bootstrap: For responsive design and pre-built UI components.
 
 * Backend:
-PHP: For server-side scripting and database interaction.
-Database: MySQL will store user, admin, and yoga-related data.
+- PHP: For server-side scripting and database interaction.
+- Database: MySQL will store user, admin, and yoga-related data.
  
 It features two main panels: 
 the Admin Panel and the User Panel.
