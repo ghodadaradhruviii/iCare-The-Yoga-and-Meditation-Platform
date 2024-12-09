@@ -1,0 +1,603 @@
+<?php
+// Start a session
+session_start();
+
+// Check if the form is submitted
+if (isset($_POST['submit'])) {
+    // Retrieve form data
+    $email = $_POST["email"];
+    $pass = $_POST["password"];
+
+    // Connect to MySQL database
+    $servername = "localhost";
+    $username = "root";
+    $dbpassword = "";
+    $dbname = "users";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $dbpassword, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Sanitize the email input to prevent SQL injection
+    $email = $conn->real_escape_string($email);
+
+    // Determine which table to query based on email
+    if ($email == "admin12@gmail.com") {
+        $sql = "SELECT * FROM admin WHERE email='$email'";
+    } else {
+        $sql = "SELECT * FROM userdetails WHERE email='$email'";
+    }
+
+    $result = $conn->query($sql);
+
+    // Check if any record is returned
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        // Direct password comparison
+        if ($pass === $row['pass']) {
+            // Set session variable
+            $_SESSION['email'] = $email;
+
+            if ($email == "admin12@gmail.com") {
+                header('Location: ../admin/index.php');
+            } else {
+                header('Location: ../Home/index.html');
+            }
+            exit();
+        } else {
+            echo "<script>alert('Incorrect password');</script>";
+        }
+    } else {
+        echo "<script>alert('Email not found');</script>";
+    }
+
+    // Close connection
+    $conn->close();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login With iCare</title>
+    <link rel="stylesheet" href="scss/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+    <header>
+    </header>
+    <main>
+        <!-- <form method="post" action="login.php" id="login-form"> -->
+        <div class="container">
+            <div class="firstContainer">
+                <div class="detailContainer">
+                    <form action="" method="post">
+                        <div class="logowithname">
+                            <div class="logo">
+                                <img src="yogalogo.png" alt="">
+                            </div>
+                            <div class="name"><img src="icarename.png" alt=""></div>
+                        </div>
+                        <div class="loginAccount">
+                            <h1>Login</h1>
+                            <div class="inputFields">
+                                <input type="email" name="email" id="emailid" placeholder="Email Address">
+                                <input type="password" name="password" id="password" placeholder="Password"><span
+                                    id="eye"><i class="fa-regular fa-eye"></i></span>
+                                <div class="agreeCondition">
+                                    <input type="checkbox" name="condition" id="agree" checked>
+                                    <label for="agree">I agree with <a href="#">Terms</a> and <a
+                                            href="#">Privacy</a></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="signin">
+                            <!-- <button   ><a href="../admin/index.php  ">SIGN IN</a></button> -->
+                            <input type="submit" name="submit" value="submit">
+                            <button type="button">SIGN IN WITH GOOGLE</button>
+                        </div>
+                        <div class="donothaveAccount">
+                            <p>Don't have an account? <a href="../Register/register.php">Register</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="secondContainer">
+                <div class="aboutandcontact">
+                    <p><a href="../Contact/contact.php">Contact</a></p>
+                </div>
+                <div class="imageContainer">
+                    <img src="register.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- </form> -->
+
+    </main>
+    <footer>
+
+    </footer>
+    <!-- <script type="text/javascript" src="login.js"></script>a -->
+</body>
+
+</html>
+____________________________________________
+
+* dashboard
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js" integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Icon link -->
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- External JS and CSS -->
+     <style>
+        
+     </style>
+    <link rel="stylesheet" href="./sidestyle.css ">
+    <link rel="stylesheet" href="./userstyle.css">
+    <!-- <link rel="stylesheet" href="./addmovie.css">
+    <link rel="stylesheet" href="./historystyle.css"> -->
+
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <aside id="sidebar">
+            <div class="d-flex">
+                <button id="toggle-btn" type="button"> <i class="lni lni-grid-alt"></i></button>
+                <div class="sidebar-logo">
+                    <a href="#">iCare Admin</a>
+                </div>
+          
+            </div>
+            <div class="profile">
+            <img src="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=" alt="">
+            </div>
+            <hr>
+            <ul class="sidebar-nav">
+
+                <li class="sidebar-item">
+                    <a href="?page=home" class="sidebar-link navlink" data-page="home.php"><i class="lni lni-home"></i>
+                        <span>Dashboard</span></a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="?page=viewuser" class="sidebar-link navlink">
+                        <i class="lni lni-protection"></i><span>User Details</span></a>
+                </li>
+                
+                <li class="sidebar-item">
+                    <a href="?page=appointment" class="sidebar-link navlink" data-page="appointment.php"><i class="lni lni-support"></i>
+                        <span>Contact Us</span></a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link"><i class="lni lni-popup"></i>
+                        <span>Notification</span></a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link"><i class="lni lni-cog"></i>
+                        <span>Setting</span></a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="../Login/logout.php" class="sidebar-link"><i class="lni lni-exit"></i>
+                    <span>Logout</span></a>
+            </div>
+        </aside>
+        <div class="main p-3" id="content">
+            <?php
+            $page = isset($_GET['page']) ? $_GET['page'] : '';
+
+            switch ($page) {
+                
+                case 'viewuser':
+                    include('viewuser.php');
+                    break;
+               
+                case 'appointment':
+                    include('contactus.php');
+                    break;
+                default:
+                include('home.php');
+            }
+            ?>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+
+</html>
+
+
+
+__________________________________________
+
+* add user
+
+<?php
+session_start();
+$servername = "localhost"; // Change this if your MySQL server is running on a different host
+$username = "root"; // Default username for MySQL in XAMPP is "root"
+$dbpassword = ""; // Default password for MySQL in XAMPP is empty
+$dbname = "users"; // Change this to your database name
+
+// Create connection
+$conn = new mysqli($servername, $username, $dbpassword, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+
+if (isset($_POST['signupbtn'])) {
+    $fullname = $_POST["fullname"];
+    $email = $_POST["email"];
+    $pass = $_POST["password"];
+    $sql = "INSERT INTO userdetails (fullname, email, pass) VALUES ('$fullname','$email','$pass')";
+    $result = mysqli_query($conn, $sql);
+
+    if ($result) {
+        echo "<script>alert('insert record successfully') </script>";
+    } else {
+        echo "<script>alert('insert error') </script>";
+
+    }
+}
+
+
+if (isset($_POST['delete'])) {
+    // Get the ID from the form and sanitize it
+    $id = intval($_POST['id']); // Convert to integer to ensure it's a number
+
+    // Create the DELETE query
+    $query = "DELETE FROM userdetails WHERE id = $id";
+
+    // Execute the query
+    if (mysqli_query($conn, $query)) {
+        echo "Record deleted successfully.";
+    } else {
+        echo "Error deleting record: " . mysqli_error($conn);
+    }
+}
+
+<html>
+<body>
+   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add User Details</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form name="form" action="" method="POST">
+                            <div class="createAccount">
+                                <h1>Create Account</h1>
+                                <div class="inputFields">
+                                    <input type="text" name="fullname" id="fullname" placeholder="Full Name" required>
+                                    <input type="email" name="email" id="emailid" placeholder="Email Address" required>
+                                    <input type="password" name="password" id="password" placeholder="Password"
+                                        required>
+                                    <div class="agreeCondition">
+                                        <input type="checkbox" name="condition" id="agree">
+                                        <label for="agree">I agree with <a href="#">Terms</a> and <a
+                                                href="#">Privacy</a></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" name="signupbtn" id="signupbtn" class="btns btn btn-danger"
+                                value="SignUp" />
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+</body>
+</html>
+
+
+--------------------------------------
+*contact us 
+
+
+<?php
+session_start();
+$servername = "localhost"; // Change this if your MySQL server is running on a different host
+$username = "root"; // Default username for MySQL in XAMPP is "root"
+$dbpassword = ""; // Default password for MySQL in XAMPP is empty
+$dbname = "users"; // Change this to your database name
+
+// Create connection
+$conn = new mysqli($servername, $username, $dbpassword, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+
+if (isset($_POST['signupbtn'])) {
+    // $id = $_POST["id"];
+    $uname = $_POST["uname"];
+    $email = $_POST["email"];
+    $sub = $_POST["sub"];
+    $msg = $_POST["msg"];
+
+    $sql = "INSERT INTO contact (uname, email, sub,msg) VALUES ('$uname','$email','$sub','$msg')";
+    $result = mysqli_query($conn, $sql);
+
+    if ($result) {
+        echo "<script>alert('insert record successfully') </script>";
+    } else {
+        echo "<script>alert('insert error') </script>";
+
+    }
+}
+
+
+if (isset($_POST['delete'])) {
+    // Get the ID from the form and sanitize it
+    $id = intval($_POST['id']); // Convert to integer to ensure it's a number
+
+    // Create the DELETE query
+    $query = "DELETE FROM contact WHERE id = $id";
+
+    // Execute the query
+    if (mysqli_query($conn, $query)) {
+        echo "Record deleted successfully.";
+    } else {
+        echo "Error deleting record: " . mysqli_error($conn);
+    }
+}
+
+if (isset($_POST['update'])) {
+    // Get the ID and updated data from the form
+    $id = intval($_POST['id']);
+    $uname = $_POST["uname"];
+
+    $email = $_POST["email"];
+    $sub = $_POST["sub"];
+    $msg = $_POST["msg"];
+
+
+    // Ensure the passwords match before updating
+
+    // Update query
+    $query = "UPDATE contact SET uname = '$uname', email = '$email', sub = '$sub', msg = '$msg'  WHERE id = $id ";
+
+    // Execute the query
+    if (!mysqli_query($conn, $query)) {
+        echo "Error updating record: " . mysqli_error($conn);
+    }
+
+}
+// Fetch and display all users
+if (isset($_POST['search'])) {
+    $search = $_POST['searchval'];
+    $sqlshow = mysqli_query($conn, "SELECT * FROM contact  where uname like '%$search%'  ORDER BY id ASC");
+
+} else {
+
+    $sqlshow = mysqli_query($conn, "SELECT * FROM contact ORDER BY id ASC");
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="./userstyle.css"> -->
+    <link rel="stylesheet" href="./sidestyle.css ">
+    <link rel="stylesheet" href="./userstyle.css">
+    <link rel="stylesheet" href="./addmovie.css">
+    <link rel="stylesheet" href="./historystyle.css">
+
+    <style></style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="head">User Dashboard</h1>
+        <div class="userdata">
+            <span id="heading">Contact User</span>
+            <span id="addbtn">
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add User</button>
+            </span>
+            <span id="searching">
+                <form action="" method="post"> <input type="text" name="searchval" id="searchval"
+                        placeholder="Search username"> <button type="submit" class="btn btn-success" name="search"
+                        value="Search">Search</button></form>
+
+            </span>
+
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">User Contact Details</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form name="form" action="" method="POST">
+                                <div class="createAccount">
+                                    <h1>Create Account</h1>
+                                    <div class="inputFields">
+                                        <input type="text" name="uname" id="uname" placeholder="user Name" required>
+                                        <input type="email" name="email" id="email" placeholder="Email Address"
+                                            required>
+                                        <input type="text" name="sub" id="sub" placeholder="subject" required>
+                                        <input type="text" name="msg" id="msg" placeholder="message" required>
+                                        <div class="agreeCondition">
+                                            <input type="checkbox" name="condition" id="agree">
+                                            <label for="agree">I agree with <a href="#">Terms</a> and <a
+                                                    href="#">Privacy</a></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="submit" name="signupbtn" id="signupbtn" class="btns btn btn-danger"
+                                    value="SignUp" />
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+            <div class="usertable">
+                <table class="table table-hover ">
+                    <thead class="table-success">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">uname</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Message</th>
+
+                            <th scope="col" colspan="2">Operations</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        # code...
+                        while ($row = mysqli_fetch_array($sqlshow)) {
+
+                            ?>
+                            <tr>
+                                <th scope="row"><?php echo $row['id']; ?></th>
+                                <td><?php echo $row['uname']; ?></td>
+                                <td><?php echo $row['email']; ?></td>
+                                <td><?php echo $row['sub']; ?></td>
+                                <td><?php echo $row['msg']; ?></td>
+
+
+                                <td class="delete">
+                                    <form method="post" action="" style="display: inline;">
+                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>" />
+                                        <!-- Use the button tag to wrap the icon -->
+                                        <button type="submit" name="delete"
+                                            style="border: none; background: none; cursor: pointer;">
+                                            <i class="fa-solid fa-trash" style="color: red;"></i>
+                                            <!-- You can customize the icon's style -->
+                                        </button>
+
+                                    </form>
+                                </td>
+                                <td class=" update">
+                                    <form method="post" action="" style="display: inline;">
+                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>" />
+                                        <!-- Use the button tag to wrap the icon -->
+                                        <button type="button" style="border: none; background: none; cursor: pointer;"
+                                            data-bs-toggle="modal" data-bs-target="#modal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <div class="modal fade" id="modal" data-bs-backdrop="static"
+                                            data-bs-keyboard="false" tabindex="-1"
+                                            aria-labelledby="modalLabel<?php echo $row['id']; ?>" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5"
+                                                            id="modalLabel<?php echo $row['id']; ?>">
+                                                            Update Details for <?php echo $row['uname']; ?></h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!-- Update form inside the modal -->
+                                                        <form name="form" action="" method="POST">
+                                                            <input type="hidden" name="id"
+                                                                value="<?php echo $row['id']; ?>" />
+                                                            <input type="text" name="uname" id="uname"
+                                                                placeholder="Full Name" value="<?php echo $row['uname']; ?>"
+                                                                required>
+                                                            <input type="email" name="email" id="email"
+                                                                value="<?php echo $row['email']; ?>"
+                                                                placeholder="Email Address" required>
+                                                            <input type="text" name="sub" id="sub" placeholder="subject"
+                                                                value="<?php echo $row['sub']; ?>" required>
+                                                            <input type="text" name="msg" id="msg" placeholder="message"
+                                                                value="<?php echo $row['msg']; ?>" required>
+
+
+
+
+                                                            <input type="submit" name="update" id="update"
+                                                                class="btn btn-danger" value="Update" />
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php
+
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+_________________________________
+
+*logout
+
+<?php
+// Start the session
+session_start();
+
+// Unset all of the session variables
+session_unset();
+
+// Destroy the session
+session_destroy();
+
+// Redirect to the home page or login page
+header("Location: ../Home/index.html"); // Corrected syntax
+exit();
+?>
